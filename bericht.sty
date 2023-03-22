@@ -1,0 +1,336 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Descr:       LaTeX Style für Vorlage für Berichte der DHBW-Karlsruhe
+%% Author:      Prof. Dr. Jürgen Vollmer, juergen.vollmer@dhbw-karlsruhe.de
+%% $Id: bericht.sty,v 1.25 2020/03/13 15:38:13 vollmer Exp $
+%% -*- coding: utf-8 -*-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ACHTUNG, wenn man eine eigene Format-Datei benutzt dann werden Änderungen an bericht.sty
+%% erst wirksam, wenn die Format-Datei neu erzeugt wurde!!!
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bericht}[2017/10/06 v1.2]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% needed packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}   % UTF8-Codierung
+\usepackage{babel}      % Sprachanpassungen für generierte Texte wie "Inhaltsverzeichnis" etc
+\usepackage[T1]{fontenc}% Interne LaTeX Codierungen
+\usepackage[dvipsnames,table]{xcolor} % Extending L A TEX’s color facilities
+%\usepackage{xcolor}
+\usepackage[babel, german=guillemets]{csquotes}   % Context sensitive quotation facilities.
+\usepackage{xspace}     % http://www.ctan.org/tex-archive/help/Catalogue/entries/xspace.html
+\usepackage{array}      % http://www.ctan.org/tex-archive/help/Catalogue/entries/array.html
+\usepackage{tabularx}   % http://www.ctan.org/tex-archive/help/Catalogue/entries/tabularx.html
+\usepackage{eurosym}    % \euro
+\usepackage{pdfpages}   % http://www.ctan.org/tex-archive/help/Catalogue/entries/pdfpages.html
+\usepackage{needspace}  % http://www.tex.ac.uk/cgi-bin/texfaq2html?label=nopagebrk
+\usepackage[bookmarksopen,bookmarksnumbered]{hyperref}
+\usepackage{cleveref} 	%that ref recognizes and prints listing
+\usepackage{bookmark}   % Bookmarks for hyperref
+\usepackage{graphicx}
+\usepackage[headings]{fullpage}
+\usepackage{fancyhdr}
+\usepackage{accsupp}
+\usepackage{url}
+\usepackage{microtype}  % http://tug.ctan.org/tex-archive/macros/latex/contrib/microtype/
+\usepackage{lmodern}    % Computern-Modern Schriftfamilie
+\usepackage{amssymb}    % Symbole
+\usepackage{framed}     % Framed or shaded regions that can break across pages.
+		        % http://dante.ctan.org/tex-archive/help/Catalogue/entries/framed.html
+			% Benutzung siehe erklaerung.tex
+
+\usepackage{wrapfig}    % Bilder von textumfliessen lassen
+
+\usepackage[colorinlistoftodos]{todonotes}
+                        % Einfache Verwaltung und Erstellung von TODO's Markierungen
+			% http://tug.ctan.org/tex-archive/macros/latex/contrib/todonotes/
+			% wichtige Paket-Optionen: disable
+
+\usepackage{makeidx}    % Erstellung eines Indexes
+\makeindex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% eigene Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\email}[1]{\href{mailto:#1}{\textless#1\textgreater}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% citation, bibliography, BIBLATEX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Wer etwas mehr "Kontrolle" über das Aussehen der Referenzen haben möchte, kann
+% auch das "biblatex"-Paket benutzen.
+\usepackage{etoolbox}  % http://dante.ctan.org/tex-archive/help/Catalogue/entries/etoolbox.html
+\usepackage[
+	hyperref=true,          % Klickbare Referenzen in der PDF-Datei
+        backref=true,           % In der Literaturref. die Seiten angeben, wo ein \cite dazu steht
+        bibencoding=inputenc,   % s. inputenc-Paket
+	style=authoryear-comp,
+        backend=bibtex,
+	sorting=nty]{biblatex}  % http://dante.ctan.org/tex-archive/help/Catalogue/entries/biblatex.html
+\renewcommand{\mkbibnamefamily}[1]{\textsc{#1}}
+
+% Abstand der einzelnen Einträge in der Literaturangaben
+\renewcommand{\bibitemsep}{1ex}
+
+% Welche Klammern soll \parencite{..} benutzen?
+\renewcommand{\bibleftparen}{[}
+\renewcommand{\bibrightparen}{]}
+
+% biblatex's \cite{..} gibt "normalerweise" keine Klammern um die Referenz aus
+% \parencite{..} gibt Klammern aus (die oben definiert sind)
+% Damit das "normale" Verhalten andere BibTeX-Stile realisiert wird, d.h. \cite{..}
+% gibt Klammen aus, wird folgendes definiert:
+% "Merke" ursprünliche Definition unter neuem Namen
+\let\citeNoParen\cite
+% "Redefiniere" \cite:
+\let\cite\parencite
+
+% Meine speziellen \cite-Kommandos:
+% Ausgabe des Untertitels (SUBTITLE) Feldes einer Referenz
+\DeclareCiteCommand{\citesubtitle}
+  {\boolfalse{citetracker}%
+   \boolfalse{pagetracker}%
+   \usebibmacro{prenote}}
+  {\indexfield{indextitle}%
+   \printfield[citetitle]{subtitle}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+% Ausgabe des Titels (TITLE) Feldes und der Referenz
+\DeclareCiteCommand{\citetitleref}
+  {\booltrue{citetracker}%
+   \booltrue{pagetracker}%
+   \usebibmacro{prenote}}
+  {\indexfield{indextitle}%
+   \printfield[citetitle]{title} \cite{\thefield{entrykey}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+% wie citetitleref, nur als Fussnote
+\DeclareCiteCommand{\citetitlerefFootnote}
+  {}
+  {\footnote{\citetitleref{\thefield{entrykey}}}}
+  {}
+  {}
+
+
+% Ausgabe der URL im HOWPUBLISHED Feld
+% Referenzieren von URL's, Format in der *.bib-Datei
+%@MISC{key,
+%  AUTHOR	= "....",
+%  TITLE	= "Webseite....",
+%  HOWPUBLISHED = "\url{http://www.domain.tld}",
+%  YEAR		= YYYY,    % Jahr  der Einsichtname, YYYY = Jahreszahl 4 Stellog
+%  MONTH	= ABC      % Monat der Einsichtnahme (jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov. dec
+%}
+\DeclareCiteCommand{\citeurl}
+  {\booltrue{citetracker}%
+   \booltrue{pagetracker}%
+   \usebibmacro{prenote}}
+  {\indexfield{indextitle}%
+   \printfield[citetitle]{howpublished}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+% Ausgabe der URL im HOWPUBLISHED Feld und Referenz
+\DeclareCiteCommand{\citeurlref}
+  {\booltrue{citetracker}%
+   \booltrue{pagetracker}%
+   \usebibmacro{prenote}}
+  {\indexfield{indextitle}%
+   \printfield[citetitle]{howpublished} \cite{\thefield{entrykey}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+% Augabe: Vorname Nachname des Autors
+\DeclareCiteCommand{\citefullauthor}
+  {\booltrue{citetracker}%
+   \booltrue{pagetracker}%
+   \usebibmacro{prenote}}
+  {\indexfield{indextitle}%
+    \textsc{\printnames[byeditor]{author}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Programmlistings setzen
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}   % http://www.ctan.org/tex-archive/macros/latex/contrib/listings/
+
+% Wie sollen die Überschriften benannt werden:
+\renewcommand{\lstlistingname}{Algorithmus}
+
+% Wie die Liste der Listings, s. \lstlistoflistings in bericht.tex
+\renewcommand{\lstlistlistingname}{Liste der Algorithmen}
+
+% So kann man einen Stil für alle  Algorithmen definieren
+\lstdefinestyle{algoBericht}{
+  numbers=left,              % Zeilennummern einfügen
+  numberstyle=\tiny,         % wie werden sie gesetzt
+  numbersep=5pt,             % Abstand der Nummern zum Text
+  numberblanklines=false,    % bei Leerzeilen keine Nummer ausgeben (aber zählen)
+  basicstyle=\sffamily\small,         % Wie soll der Algorithmus gesetzt werden
+}
+
+
+\renewcommand{\lstlistingname}{code}	%prints code instead of listing
+\renewcommand{\lstlistlistingname}{Liste der Quellcodes}
+
+\lstdefinelanguage{JavaScript}{
+  morekeywords=[1]{break, continue, delete, else, for, function, if, in,
+    new, return, this, typeof, var, let, const, void, while, with},
+  % Literals, primitive types, and reference types.
+  morekeywords=[2]{false, null, true, boolean, number, undefined,
+    Array, Boolean, Date, Math, Number, String, Object},
+  % Built-ins.
+  morekeywords=[3]{eval, parseInt, parseFloat, escape, unescape},
+  sensitive,
+  morecomment=[s]{/*}{*/},
+  morecomment=[l]//,
+  morecomment=[s]{/**}{*/}, % JavaDoc style comments
+  morestring=[b]',
+  morestring=[b]"
+}[keywords, comments, strings]
+
+\lstdefinelanguage{Python}{
+  morekeywords=[1]{,def,as,assert,nonlocal,with,yield,self,True,False,None,} % Python builtin
+  morekeywords=[2]{,__init__,__add__,__mul__,__div__,__sub__,__call__,__getitem__,__setitem__,__eq__,__ne__,__nonzero__,__rmul__,__radd__,__repr__,__str__,__get__,__truediv__,__pow__,__name__,__future__,__all__,}, % magic methods
+  morekeywords=[3]{,async,await,object,type,isinstance,copy,deepcopy,zip,enumerate,reversed,list,set,len,dict,tuple,range,xrange,append,execfile,real,imag,reduce,str,repr,}, % common functions
+  morekeywords=[4]{,Exception,NameError,IndexError,SyntaxError,TypeError,ValueError,OverflowError,ZeroDivisionError,}, % errors
+  morekeywords=[5]{,ode,fsolve,sqrt,exp,sin,cos,arctan,arctan2,arccos,pi, array,norm,solve,dot,arange,isscalar,max,sum,flatten,shape,reshape,find,any,all,abs,plot,linspace,legend,quad,polyval,polyfit,hstack,concatenate,vstack,column_stack,empty,zeros,ones,rand,vander,grid,pcolor,eig,eigs,eigvals,svd,qr,tan,det,logspace,roll,min,mean,cumsum,cumprod,diff,vectorize,lstsq,cla,eye,xlabel,ylabel,squeeze,}, % numpy / math
+  morecomment=[s]{/*}{*/},
+  morecomment=[l]//,
+  morecomment=[s]{/**}{*/}, % JavaDoc style comments
+  morestring=[b]',
+  morestring=[b]"
+}[keywords, comments, strings]
+
+
+\lstalias[]{ES6}[ECMAScript2015]{JavaScript}
+
+% Requires package: color.
+\definecolor{mediumgray}{rgb}{0.3, 0.4, 0.4}
+\definecolor{mediumblue}{rgb}{0.0, 0.0, 0.8}
+\definecolor{forestgreen}{rgb}{0.13, 0.55, 0.13}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+\definecolor{royalblue}{rgb}{0.25, 0.41, 0.88}
+\definecolor{crimson}{rgb}{0.86, 0.8, 0.24}
+
+\lstdefinestyle{JSES6Base}{
+  backgroundcolor=\color{gray!12},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=false,
+  breaklines=true,
+  %postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  postbreak=\raisebox{0ex}[0ex][0ex]{\BeginAccSupp{ActualText={}}\ensuremath{\color{gray}\hookrightarrow\space}\EndAccSupp{}},
+  captionpos=b,
+  columns=fullflexible,
+  commentstyle=\color{mediumgray}\upshape,
+  emph={},
+  emphstyle=\color{crimson},
+  extendedchars=true,  % requires inputenc
+  fontadjust=true,
+  frame=single,
+  identifierstyle=\color{black},
+  keepspaces=true,
+  keywordstyle=\color{mediumblue},
+  keywordstyle={[2]\color{darkviolet}},
+  keywordstyle={[3]\color{royalblue}},
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  rulecolor=\color{black},
+  showlines=false,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stringstyle=\color{forestgreen},
+  tabsize=2,
+  title=\lstname,
+  upquote=true  % requires textcomp
+}
+
+\lstdefinestyle{JavaScript}{
+  language=JavaScript,
+  style=JSES6Base
+}
+
+\lstdefinestyle{Python}{
+  language=Python,
+  style=JSES6Base
+}
+
+%Style vom Quellcode
+%angepasst für python
+\lstdefinestyle{codestyle}{%
+backgroundcolor=\color{gray!12},
+basicstyle=\ttfamily\small,
+commentstyle=\color{green!60!black},
+keywordstyle=\color{magenta},
+stringstyle=\color{orange},
+showstringspaces=false,
+%captionpos=b,
+numbers=left,
+frame=tblr,
+tabsize=2,
+breaklines=true,	%automatischer Zeilenumbruch im Quellcode
+%inputpath=listings		%uses this style for all code in the folder "listings"
+}
+
+\lstdefinestyle{ES6}{
+  language=JavaScript,
+  style=codestyle
+}
+
+\newcommand*{\captionsource}[2]{%
+  \caption[{#1}]{%
+    #1%
+    \\\hspace{\linewidth}%
+    \textbf{Source:} #2%
+  }%
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abkürzungen, http://www.ctan.org/tex-archive/macros/latex/contrib/acronym/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[printonlyused,withpage]{acronym}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Formelverzeichnis, Dank an Andy Nöltner <ANoeltner@lstelcom.com>
+% Leider versursacht float zusammen mit Hyperref Warnungen
+% siehe http://www.tex.ac.uk/cgi-bin/texfaq2html?label=hyperdupdest
+% Wenn also das Formelverzeichnis nicht benötigt, dann das folgende
+% auskommentieren
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{float}
+\newfloat{eq}{H}{for}[chapter]
+\newcommand{\forname}{Formelverzeichnis}
+\newcommand{\listofequations}{\listof{eq}{\forname}}
+
+\newcommand{\eqlabel}[2]{
+        \label{#1}
+        \addcontentsline{for}{eq}{(\ref{#1}) #2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Definitionen mit Ausgabe im Index
+% gibt #2 aus und fügt #1 bzw. #2 (wenn #1 nicht angegeben) in den Index ein
+\newcommand{\Def}[2][]{%
+   \def\OPTARG{#1}%
+   \def\EMPTY{}%
+   \ifx\OPTARG\EMPTY\index{#2}\else\index{#1}\fi%
+   \textbf{#2}\xspace%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endinput
+%%
+%% End of file `bericht.sty'.

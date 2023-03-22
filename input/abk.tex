@@ -1,0 +1,20 @@
+
+\chapter*{Abkürzungsverzeichnis}                   % chapter*{..} -->   keine Nummer, kein "Kapitel"
+						         % Nicht ins Inhaltsverzeichnis
+% \addcontentsline{toc}{chapter}{Akürzungsverzeichnis}   % Damit das doch ins Inhaltsverzeichnis kommt
+
+% Hier werden die Abkürzungen definiert
+\begin{acronym}[DHBW]
+  % \acro{Name}{Darstellung der Abkürzung}{Langform der Abkürzung}
+\acro{dhbw}[DHBW]{Duale Hochschule Baden-Württemberg}
+ % Folgendes benutzen, wenn der Plural einer Abk. benöigt wird
+ % \newacroplural{Name}{Darstellung der Abkürzung}{Langform der Abkürzung}
+
+ \acro{js}[JS]{JavaScript}
+ \acro{opcua}[OPC UA]{OPC Unified Architecture}
+ \acro{opc}[OPC]{Open Plattform Communications}
+ \acro{rfid}[RFID]{Radio Frequency Identification}
+
+ % Wenn neicht benutzt, erscheint diese Abk. nicht in der Liste
+ \acro{NUA}{Not Used Acronym}
+\end{acronym}

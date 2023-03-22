@@ -1,0 +1,161 @@
+\documentclass[
+   ngerman          % neue deutsche Rechtschreibung
+  ,a4paper          % Papiergrösse
+% ,twoside          % Zweiseitiger Druck (rechts/links)
+% ,10pt             % Schriftgrösse
+  ,11pt
+% ,12pt
+  ,pdftex
+%  ,disable         % Todo-Markierungen auschalten
+]{report}          
+
+\usepackage{bericht}
+%\usepackage[margin=lin]{geometry}
+%\usepackage{txfonts}
+
+
+\csname endofdump\endcsname
+
+
+
+\newcommand{\Autor}{Lorenz Scherrer}
+\newcommand{\MatrikelNummer}{8809469}
+\newcommand{\Kursbezeichnung}{tinf21b3}
+
+\newcommand{\FirmenName}{SICK AG}
+\newcommand{\FirmenStadt}{Waldkirch}
+\newcommand{\FirmenLogoDeckblatt}{\fbox{\includegraphics[width=3cm]{Bild/SICK_Logo_Claim}}}
+
+% Falls es kein Firmenlogo gibt:
+%  \newcommand{\FirmenLogoDeckblatt}{}
+
+\newcommand{\BetreuerFirma}{Sebastian Heidepriem}
+\newcommand{\BetreuerDHBW}{Prof. Dr. Jürgen Vollmer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Wird auf dem Deckblatt und in der Erklärung benutzt:
+\newcommand{\Was}{Projektarbeit}
+
+\newcommand{\Titel}{Beispielimplementierung eines OPC UA Clients für das SICK Produkt RFU6xx auf Basis von node.js mit node-opcua}
+\newcommand{\AbgabeDatum}{Am Besten nach der Praxsisphase}
+
+\newcommand{\Dauer}{12 Wochen}
+
+\newcommand{\Abschluss}{Bachelor of Science}
+
+\newcommand{\Studiengang}{Informatik / Informationstechnik}
+
+\hypersetup{%%
+  pdfauthor={\Autor},
+  pdftitle={\Titel},
+  pdfsubject={\Was}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% Benutzt man das "biblatex"-Paket, dann muß das hier stehen:
+\bibliography{quellen}
+\setlength{\marginparwidth}{2cm}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+\begin{center}
+\vspace*{-2cm}
+\FirmenLogoDeckblatt\hfill\includegraphics[width=4cm]{Bild/dhbw-logo}\\[2cm]
+{\Huge \Titel}\\[1cm]
+{\Huge\scshape \Was}\\[1cm]
+{\large für die Prüfung zum}\\[0.5cm]
+{\Large \Abschluss}\\[0.5cm]
+{\large des Studienganges \Studiengang}\\[0.5cm]
+{\large an der}\\[0.5cm]
+{\large Dualen Hochschule Baden-Württemberg Karlsruhe}\\[0.5cm]
+{\large von}\\[0.5cm]
+{\large\bfseries \Autor}\\[1cm]
+{\large Abgabedatum \AbgabeDatum}
+\vfill
+\end{center}
+\begin{tabular}{l@{\hspace{2cm}}l}
+Bearbeitungszeitraum	         & \Dauer 			    \\
+Matrikelnummer	               & \MatrikelNummer	\\
+Kurs			                     & \Kursbezeichnung \\
+Ausbildungsfirma	             & \FirmenName		  \\
+			                         & \FirmenStadt			\\
+Betreuer der Ausbildungsfirma	 & \BetreuerFirma		\\
+Gutachter der Studienakademie	 & \BetreuerDHBW	  \\
+\end{tabular}
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{input/erklaerung.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\pagenumbering{Roman}
+\tableofcontents           % Inhaltsverzeichnis hier ausgeben
+\listoffigures             % Liste der Abbildungen
+%\listoftables              % Liste der Tabellen
+\lstlistoflistings         % Liste der Listings
+%\listofequations           % Liste der Formeln
+\input{input/abk.tex}              % Abkürzungsverzeichnis
+% Jetzt kommt der "eigentliche" Text
+\newpage
+
+\newcounter{savepage}
+\setcounter{savepage}{\value{page}}
+\pagenumbering{arabic}
+
+
+\input{input/einleitung}
+\include{input/theorie.tex}
+\include{input/konzept.tex}
+\include{input/implementierung.tex}
+\include{input/schlussbetrachtung}
+% Ab hier beginnt der Anhang
+
+
+
+\pagenumbering{Roman}
+\setcounter{page}{\value{savepage}}
+
+\addcontentsline{toc}{chapter}{Anhang}
+
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+
+% Haben Sie das "biblatex"-Paket nicht installiert, benutzen Sie folgendes:
+% Ohne das "biblatex"-Paket (s. bericht.sty) produziert folgendes
+% "deutsche" Zitate in Literaturverzeichnissen gemaß der Norm DIN 1505,
+% Teil 2 vom Jan. 1984.
+% Die Zitatmarken werden alphabetisch nach Verfassern
+% sortiert und sind durch abgekürzte Verfasserbuchstaben plus
+% Erscheinungsjahr in eckigen Klammern gekennzeichnet.
+
+%\bibliographystyle{unsrt}
+%\bibliography{bericht}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+% BIBLATEX
+% Benutzt man das "biblatex"-Paket, muß man folgendes schreiben:
+\def\refname{Literaturverzeichnis}
+\printbibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\appendix
+
+\include{changelog}
+
+%\newpage
+%\addcontentsline{toc}{chapter}{Liste der ToDo's}
+%\listoftodos[Liste der ToDo's]
+
+%\noindent{}
+
+\end{document}
